@@ -3,7 +3,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 
-void Game::init(const char* title, int width, int height)
+Game::Game(const char* title, int width, int height)
 {
   m_window = SDL_CreateWindow(title
     , SDL_WINDOWPOS_CENTERED
@@ -12,19 +12,32 @@ void Game::init(const char* title, int width, int height)
     , height
     , false);
 
+  m_surface = SDL_GetWindowSurface(m_window);
+
   Renderer = SDL_CreateRenderer(m_window, -1, false);
 
   Running = true;
 }
 
+Game::~Game()
+{
+  SDL_FreeSurface(m_surface);
+  SDL_DestroyRenderer(Renderer);
+  SDL_DestroyWindow(m_window);
+  SDL_Quit();
+  Running = false;
+}
+
 void Game::handleEvents()
 {
-  SDL_Event e;
-
-  while ( SDL_PollEvent( &e ) != 0)
+  while ( SDL_PollEvent( &m_windowEvent ) != 0)
   {
-    if (e.type == SDL_QUIT)
-      close();
+    switch (m_windowEvent.type)
+    {
+      case SDL_QUIT:
+        Running = false;
+        break;
+    }
   }
 }
 
@@ -34,13 +47,11 @@ void Game::update(double lag)
   std::cout << "Updating game at: x" << lag << " speed.\n";
 }
 
-void Game::render()
+void Game::draw()
 {
-}
+  SDL_RenderClear(Renderer);
 
-void Game::close()
-{
-  SDL_DestroyWindow(m_window);
-  SDL_Quit();
-  Running = false;
+  SDL_UpdateWindowSurface(m_window);
+
+  std::cout << "Drawing game.\n";
 }

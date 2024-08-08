@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.2)
 project(ping)
 
 set(CMAKE_CXX_STANDARD 23)
 
-find_package(SDL2_REQUIRED)
+# find_package(SDL2_REQUIRED)
 
 link_libraries(SDL2)
 

@@ -1,39 +1,36 @@
+#include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
-#include <SDL2/SDL_timer.h>
+#include <iostream>
 
 #include "game.hpp"
-
-int TargetFPS { 60 };
-int TickRate { 20 };
-double FrameDelay { 1000.0 / TickRate };
+#include "timings.hpp"
 
 int main()
 {
-  Game game;
+  if (SDL_Init(SDL_INIT_VIDEO) < 0)
+  {
+    std::cout << "Failed to initialise SDL.\n";
+    std::cout << "SDL error: " << SDL_GetError() << '\n';
+    return -1;
+  }
 
-  game.init("wah", 640, 480);
+  Game game("wah", 640, 480);
 
-  uint32_t frameStart {};
-  uint32_t frameLast = SDL_GetTicks64();
-  int frameDelta {};
-  int frameAccumulator {};
+  FrameTime timer {60, 20};
 
   while (game.Running)
   {
-    frameStart = SDL_GetTicks64();
-    frameDelta = frameStart - frameLast;
-    frameLast = frameStart;
-    frameAccumulator += frameDelta;
+    timer.getTime();
 
     game.handleEvents();
 
     // Only update at fixed tickrate
-    while (frameAccumulator >= FrameDelay)
+    while (timer.FrameAccumulator >= timer.TickRate)
     {
-      game.update(frameAccumulator / FrameDelay);
-      frameAccumulator -= FrameDelay;
+      game.update(timer.FrameAccumulator / timer.TickRate);
+      timer.FrameAccumulator -= timer.TickRate;
     }
 
-    game.render();
+    game.draw();
   }
 }

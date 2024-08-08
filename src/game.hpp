@@ -3,19 +3,17 @@
 //
 
 #pragma once
-#include <SDL2/SDL_render.h>
-
-struct SDL_Window;
+#include <SDL2/SDL.h>
 
 class Game
 {
 public:
-
-  void init(const char* title, int width, int height);
+  Game(const char* title, int width, int height);
+  ~Game();
 
   void handleEvents();
   void update(double lag);
-  void render();
+  void draw();
 
   void close();
 
@@ -25,5 +23,7 @@ public:
 
 private:
   SDL_Window *m_window { nullptr };
+  SDL_Surface* m_surface { nullptr };
+  SDL_Event m_windowEvent {};
   uint8_t count {};
 };
