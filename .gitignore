@@ -78,6 +78,7 @@ fabric.properties
 
 # Replit
 .replit
+.breakpoints
 .ccls-cache/
 replit.nix
 main
